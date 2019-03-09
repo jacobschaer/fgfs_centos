@@ -52,6 +52,25 @@ git checkout -f curl-7_64_0
 cd $CURL_BUILD_PATH
 cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$CURL_INSTALL_PATH $CURL_CHECKOUT_PATH
 
+
+#BOOST
+BOOST_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/boost
+BOOST_BUILD_PATH=$WORKSPACE_PATH/build/boost
+BOOST_INSTALL_PATH=$WORKSPACE_PATH/install/boost
+mkdir -p $BOOST_CHECKOUT_PATH
+mkdir -p $BOOST_INSTALL_PATH
+mkdir -p $BOOST_BUILD_PATH
+wget https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.gz -O $BOOST_CHECKOUT_PATH/boost.tar.gz
+cd $BOOST_CHECKOUT_PATH
+tar -xvvf boost.tar.gz 
+cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
+cd tools/build
+sh bootstrap.sh  --prefix=$BOOST_INSTALL_PATH
+echo "using gcc : 4.9.4 : $CXX ; " >> src/user-config.jam
+cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
+tools/build/b2 --prefix=$BOOST_INSTALL_DIR --build-dir=$BOOST_BUILD_DIR toolset=gcc-4.9.4 install
+export $PATH=$BOOST_BUILD_DIR/boost:$PATH
+
 # Diretrions for older LibCURL
 #./configure --prefix=$CURL_INSTALL_PATH
 #make
@@ -139,4 +158,42 @@ cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$SIMGEAR_IN
 make
 make install
 
+#QT5
+sudo yum install libxcb libxcb-devel xcb-util xcb-util-devel
+QT5_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/qt5
+QT5_INSTALL_PATH=$WORKSPACE_PATH/install/qt5
+QT5_BUILD_PATH=$WORKSPACE_PATH/build/qt5
+mkdir -p $QT5_CHECKOUT_PATH
+mkdir -p $QT5_INSTALL_PATH
+mkdir -p $QT5_BUILD_PATH
+git clone git://code.qt.io/qt/qt5.git $QT5_CHECKOUT_PATH
+cd $QT5_CHECKOUT_PATH
+git checkout 5.12
+perl init-repository --module-subset=default,-qtwebengine
+./configure -developer-build -opensource -nomake examples -nomake tests --confirm-license
+gmake
+gmake install
+
+# FGFS
+FLIGHTGEAR_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/flightgear
+FLIGHTGEAR_INSTALL_PATH=$WORKSPACE_PATH/install/flightgear
+FLIGHTGEAR_BUILD_PATH=$WORKSPACE_PATH/build/flightgear
+FGDATA_INSTALL_PATH=$FLIGHTGEAR_INSTALL_PATH/fgdata
+mkdir -p $FLIGHTGEAR_CHECKOUT_PATH
+mkdir -p $FLIGHTGEAR_INSTALL_PATH
+mkdir -p $FLIGHTGEAR_BUILD_PATH
+mkdir -p $FGDATA_INSTALL_PATH
+git clone https://git.code.sf.net/p/flightgear/flightgear $FLIGHTGEAR_CHECKOUT_PATH
+cd $FLIGHTGEAR_CHECKOUT_PATH
+git pull -r
+git clone https://git.code.sf.net/p/flightgear/fgdata $FGDATA_INSTALL_PATH
+cd $FGDATA_INSTALL_PATH
+git pull -r
+cd $FLIGHTGEAR_BUILD_PATH
+cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$FLIGHTGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH/boost;$SIMGEAR_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" -DFG_DATA_DIR="$FGDATA_INSTALL_PATH" $FLIGHTGEAR_CHECKOUT_PATH
+make
+make install
+
+
 # libcgal-devel libqt4-dev zlib1g-devel freeglut3-devel libopenscenegraph-3.4-devel libopenscenegraph-devel  libplib-dev  libpng12-devel libpng16-dev qt5-default qtdeclarative5-dev qtbase5-dev-tools qttools5-dev-tools qml-module-qtquick2 qml-module-qttquick-window2 qml-module-qtquick-dialogs libqt5opengl5-devel libqt5svt5-devel libqt5websockets5-devel qtbase5-private-devel qtdeclarative5-private-devel  fluid python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins python-tk
+
