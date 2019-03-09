@@ -1,4 +1,5 @@
-sudo yum install epel-release gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bzip2-devel expat-devel xz-devel ncurses-devel procps zlib-devel  libtiff-devel qt-devel freeglut-devel boost-devel  libgudev1-devel libudev-devel dbus-devel libpng-devel  libXi-devel libXmu-devel libXinerama-devel libjpeg-turbo-devel libXft-devel tkinter cmake3 jsoncpp-devel gdal-devel glew-devel openal-soft-devel fltk-fluid python34 python34-tkinter
+sudo yum install -y epel-release
+sudo yum install -y gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bzip2-devel expat-devel xz-devel ncurses-devel procps zlib-devel  libtiff-devel qt-devel freeglut-devel boost-devel  libgudev1-devel libudev-devel dbus-devel libpng-devel  libXi-devel libXmu-devel libXinerama-devel libjpeg-turbo-devel libXft-devel tkinter cmake3 jsoncpp-devel gdal-devel glew-devel openal-soft-devel fltk-fluid python34 python34-tkinter
 
 WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
 
@@ -154,7 +155,7 @@ cd $SIMGEAR_CHECKOUT_PATH
 git pull -r
 git checkout -f next
 cd $SIMGEAR_BUILD_PATH
-cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$SIMGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" $SIMGEAR_CHECKOUT_PATH
+cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$SIMGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" $SIMGEAR_CHECKOUT_PATH
 make
 make install
 
