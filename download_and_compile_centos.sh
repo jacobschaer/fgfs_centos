@@ -4,26 +4,7 @@ sudo yum install -y epel-release
 sudo yum update -y
 sudo yum install -y gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bzip2-devel expat-devel xz-devel ncurses-devel procps zlib-devel  libtiff-devel qt-devel freeglut-devel boost-devel  libgudev1-devel libudev-devel dbus-devel libpng-devel  libXi-devel libXmu-devel libXinerama-devel libjpeg-turbo-devel libXft-devel tkinter cmake3 jsoncpp-devel gdal-devel glew-devel openal-soft-devel fltk-fluid python34 python34-tkinter
 
-
 WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
-
-#CMake
-CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/cmake
-CMAKE_INSTALL_PATH=$WORKSPACE_PATH/install/cmake
-CMAKE_BUILD_PATH=$WORKSPACE_PATH/build/cmake
-mkdir -p $CMAKE_CHECKOUT_PATH
-mkdir -p $CMAKE_INSTALL_PATH
-git clone http://cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
-cd $CMAKE_CHECKOUT_PATH
-git pull -r
-git checkout -f master
-cd $CMAKE_BUILD_PATH
-$CMAKE_CHECKOUT_PATH/cmake/configure --prefix="$CMAKE_INSTALL_PATH"
-make
-make install
-
-# Configure to use custom CMAKE
-export CMAKE=$CMAKE_INSTALL_PATH/bin/cmake
 
 #GCC
 GCC_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/gcc
@@ -43,7 +24,27 @@ make DESTDIR=$GCC_INSTALL_PATH install
 export CC=$GCC_INSTALL_PATH/usr/local/bin/gcc
 export CXX=$GCC_INSTALL_PATH/usr/local/bin/g++
 
+#CMake - Not really needed yet
+#CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/cmake
+#CMAKE_INSTALL_PATH=$WORKSPACE_PATH/install/cmake
+#CMAKE_BUILD_PATH=$WORKSPACE_PATH/build/cmake
+#mkdir -p $CMAKE_CHECKOUT_PATH
+#mkdir -p $CMAKE_INSTALL_PATH
+#mkdir -p $CMAKE_BUILD_PATH
+#git clone http://cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
+#cd $CMAKE_CHECKOUT_PATH
+#git pull -r
+#git checkout -f master
+#cd $CMAKE_BUILD_PATH
+#$CMAKE_CHECKOUT_PATH/configure --prefix="$CMAKE_INSTALL_PATH"
+#make
+#make install
+
+# Configure to use custom CMAKE
+#export CMAKE=$CMAKE_INSTALL_PATH/bin/cmake
+
 #CURL
+sudo yum install -y openssl openssl-devel
 CURL_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/curl
 CURL_BUILD_PATH=$WORKSPACE_PATH/build/curl
 CURL_INSTALL_PATH=$WORKSPACE_PATH/install/curl
@@ -56,7 +57,13 @@ git pull -r
 git checkout -f curl-7_64_0
 cd $CURL_BUILD_PATH
 cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=$CURL_INSTALL_PATH $CURL_CHECKOUT_PATH
+make
+make install
 
+# Directions for older LibCURL
+#./configure --prefix=$CURL_INSTALL_PATH
+#make
+#make install
 
 #BOOST
 BOOST_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/boost
@@ -70,16 +77,11 @@ cd $BOOST_CHECKOUT_PATH
 tar -xvvf boost.tar.gz 
 cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
 cd tools/build
-sh bootstrap.sh  --prefix=$BOOST_INSTALL_PATH
+sh bootstrap.sh
 echo "using gcc : 4.9.4 : $CXX ; " >> src/user-config.jam
 cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
-tools/build/b2 --prefix=$BOOST_INSTALL_DIR --build-dir=$BOOST_BUILD_DIR toolset=gcc-4.9.4 install
-export $PATH=$BOOST_BUILD_DIR/boost:$PATH
-
-# Diretrions for older LibCURL
-#./configure --prefix=$CURL_INSTALL_PATH
-#make
-#make install
+tools/build/b2 --prefix=$BOOST_INSTALL_PATH --build-dir=$BOOST_BUILD_PATH toolset=gcc-4.9.4 install
+export $PATH=$BOOST_BUILD_PATH/boost:$PATH
 
 # OpenAL
 # ??
@@ -201,4 +203,3 @@ make install
 
 
 # libcgal-devel libqt4-dev zlib1g-devel freeglut3-devel libopenscenegraph-3.4-devel libopenscenegraph-devel  libplib-dev  libpng12-devel libpng16-dev qt5-default qtdeclarative5-dev qtbase5-dev-tools qttools5-dev-tools qml-module-qtquick2 qml-module-qttquick-window2 qml-module-qtquick-dialogs libqt5opengl5-devel libqt5svt5-devel libqt5websockets5-devel qtbase5-private-devel qtdeclarative5-private-devel  fluid python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins python-tk
-
