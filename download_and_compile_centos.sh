@@ -1,15 +1,19 @@
+sudo yum-complete-transaction -y
+sudo yum update -y
 sudo yum install -y epel-release
+sudo yum update -y
 sudo yum install -y gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bzip2-devel expat-devel xz-devel ncurses-devel procps zlib-devel  libtiff-devel qt-devel freeglut-devel boost-devel  libgudev1-devel libudev-devel dbus-devel libpng-devel  libXi-devel libXmu-devel libXinerama-devel libjpeg-turbo-devel libXft-devel tkinter cmake3 jsoncpp-devel gdal-devel glew-devel openal-soft-devel fltk-fluid python34 python34-tkinter
+
 
 WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
 
 #CMake
-CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkout/cmake
+CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/cmake
 CMAKE_INSTALL_PATH=$WORKSPACE_PATH/install/cmake
 CMAKE_BUILD_PATH=$WORKSPACE_PATH/build/cmake
 mkdir -p $CMAKE_CHECKOUT_PATH
 mkdir -p $CMAKE_INSTALL_PATH
-git clone cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
+git clone http://cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
 cd $CMAKE_CHECKOUT_PATH
 git pull -r
 git checkout -f master
@@ -30,7 +34,7 @@ wget https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2 -O $GCC_CHECKOUT_PA
 cd $GCC_CHECKOUT_PATH
 tar -xvvf gcc.tar.gz2
 cd gcc-4.9.4
-sudo yum install libmpc-devel mpfr-devel gmp-devel
+sudo yum install -y libmpc-devel mpfr-devel gmp-devel
 ./configure --disable-multilib
 make
 make DESTDIR=$GCC_INSTALL_PATH install
@@ -160,7 +164,7 @@ make
 make install
 
 #QT5
-sudo yum install libxcb libxcb-devel xcb-util xcb-util-devel
+sudo yum install -y libxcb libxcb-devel xcb-util xcb-util-devel
 QT5_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/qt5
 QT5_INSTALL_PATH=$WORKSPACE_PATH/install/qt5
 QT5_BUILD_PATH=$WORKSPACE_PATH/build/qt5
@@ -191,7 +195,7 @@ git clone https://git.code.sf.net/p/flightgear/fgdata $FGDATA_INSTALL_PATH
 cd $FGDATA_INSTALL_PATH
 git pull -r
 cd $FLIGHTGEAR_BUILD_PATH
-cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$FLIGHTGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH/boost;$SIMGEAR_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" -DFG_DATA_DIR="$FGDATA_INSTALL_PATH" $FLIGHTGEAR_CHECKOUT_PATH
+cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$FLIGHTGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH;$QT5_INSTALL_PATH;$SIMGEAR_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" -DFG_DATA_DIR="$FGDATA_INSTALL_PATH" $FLIGHTGEAR_CHECKOUT_PATH
 make
 make install
 
