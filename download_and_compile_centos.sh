@@ -7,48 +7,41 @@ sudo yum install -y gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bz
 
 WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
 
-#CMake - Not Presently Needed AFAIKS
-#CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/cmake
-#CMAKE_INSTALL_PATH=$WORKSPACE_PATH/install/cmake
-#CMAKE_BUILD_PATH=$WORKSPACE_PATH/build/cmake
-#mkdir -p $CMAKE_CHECKOUT_PATH
-#mkdir -p $CMAKE_INSTALL_PATH
-#mkdir -p $CMAKE_BUILD_PATH
-#git clone http://cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
-#cd $CMAKE_CHECKOUT_PATH
-#git pull -r
-#git checkout -f master
-#cd $CMAKE_BUILD_PATH
-#$CMAKE_CHECKOUT_PATH/cmake/configure --prefix="$CMAKE_INSTALL_PATH"
-#make
-#make install
+#CMake
+CMAKE_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/cmake
+CMAKE_INSTALL_PATH=$WORKSPACE_PATH/install/cmake
+CMAKE_BUILD_PATH=$WORKSPACE_PATH/build/cmake
+mkdir -p $CMAKE_CHECKOUT_PATH
+mkdir -p $CMAKE_INSTALL_PATH
+git clone http://cmake.org/cmake.git $CMAKE_CHECKOUT_PATH
+cd $CMAKE_CHECKOUT_PATH
+git pull -r
+git checkout -f master
+cd $CMAKE_BUILD_PATH
+$CMAKE_CHECKOUT_PATH/cmake/configure --prefix="$CMAKE_INSTALL_PATH"
+make
+make install
 
 # Configure to use custom CMAKE
-#export CMAKE=$CMAKE_INSTALL_PATH/bin/cmake
+export CMAKE=$CMAKE_INSTALL_PATH/bin/cmake
 
-# Devtools
-sudo yum install -y centos-release-scl
-sudo yum install -y devtoolset-7
-scl enable devtoolset-7 bash
-
-#GCC - In case Devtools isn't good enough
-#GCC_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/gcc
-#GCC_INSTALL_PATH=$WORKSPACE_PATH/install/gcc
-#mkdir -p $GCC_CHECKOUT_PATH
-#mkdir -p $GCC_INSTALL_PATH
-#wget https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2 -O $GCC_CHECKOUT_PATH/gcc.tar.gz2
-#cd $GCC_CHECKOUT_PATH
-#tar -xvvf gcc.tar.gz2
-#cd gcc-4.9.4
-#sudo yum install -y libmpc-devel mpfr-devel gmp-devel
-#./configure --disable-multilib
-#make
-#make DESTDIR=$GCC_INSTALL_PATH install
+#GCC
+GCC_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/gcc
+GCC_INSTALL_PATH=$WORKSPACE_PATH/install/gcc
+mkdir -p $GCC_CHECKOUT_PATH
+mkdir -p $GCC_INSTALL_PATH
+wget https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2 -O $GCC_CHECKOUT_PATH/gcc.tar.gz2
+cd $GCC_CHECKOUT_PATH
+tar -xvvf gcc.tar.gz2
+cd gcc-4.9.4
+sudo yum install -y libmpc-devel mpfr-devel gmp-devel
+./configure --disable-multilib
+make
+make DESTDIR=$GCC_INSTALL_PATH install
 
 # Setup environment to use GCC 4.9.4 - anything pre 4.8 either fails outright or segfaults at some point
-#export CC=$GCC_INSTALL_PATH/usr/local/bin/gcc
-#export CXX=$GCC_INSTALL_PATH/usr/local/bin/g++
-#export PATH=$GCC_INSTALL_PATH/usr/local/bin/:$PATH
+export CC=$GCC_INSTALL_PATH/usr/local/bin/gcc
+export CXX=$GCC_INSTALL_PATH/usr/local/bin/g++
 
 #CURL
 CURL_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/curl
@@ -81,7 +74,7 @@ sh bootstrap.sh  --prefix=$BOOST_INSTALL_PATH
 echo "using gcc : 4.9.4 : $CXX ; " >> src/user-config.jam
 cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
 tools/build/b2 --prefix=$BOOST_INSTALL_DIR --build-dir=$BOOST_BUILD_DIR toolset=gcc-4.9.4 install
-export PATH=$BOOST_BUILD_DIR/boost:$PATH
+export $PATH=$BOOST_BUILD_DIR/boost:$PATH
 
 # Diretrions for older LibCURL
 #./configure --prefix=$CURL_INSTALL_PATH
@@ -133,7 +126,7 @@ git clone https://git.code.sf.net/p/libplib/code $PLIB_CHECKOUT_PATH
 cd $PLIB_CHECKOUT_PATH
 git pull -r
 git checkout -f master
-cd $PLIB_BUILD_PATH
+cd $PLIG_BUILD_PATH
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$PLIB_INSTALL_PATH $PLIB_CHECKOUT_PATH
 make
 make install
@@ -170,24 +163,21 @@ cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$SIMGEAR_IN
 make
 make install
 
-#QT5 - Life is hard on CentOS6... I give up for now, will probably switch to SCL/Developer Tools instead of hand-compiled GCC,
-# since QT5 ignores a lot of the common GCC environment variables
-sudo yum install -y qt5-*
-#sudo yum install -y libxcb libxcb-devel xcb-util xcb-util-devel
-#QT5_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/qt5
-#QT5_INSTALL_PATH=$WORKSPACE_PATH/install/qt5
-#QT5_BUILD_PATH=$WORKSPACE_PATH/build/qt5
-#mkdir -p $QT5_CHECKOUT_PATH
-#mkdir -p $QT5_INSTALL_PATH
-#mkdir -p $QT5_BUILD_PATH
-#git clone git://code.qt.io/qt/qt5.git $QT5_CHECKOUT_PATH
-#cd $QT5_CHECKOUT_PATH
-#git checkout 5.12
-##perl init-repository requries newer git than CentOS6 has... so either manually remove the '--force' flag from 'submodule update' in the script, or upgrade
-#perl init-repository --module-subset=default,-qtwebengine
-#./configure -developer-build -opensource -nomake examples -nomake tests --confirm-license
-#gmake
-#gmake install
+#QT5
+sudo yum install -y libxcb libxcb-devel xcb-util xcb-util-devel
+QT5_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/qt5
+QT5_INSTALL_PATH=$WORKSPACE_PATH/install/qt5
+QT5_BUILD_PATH=$WORKSPACE_PATH/build/qt5
+mkdir -p $QT5_CHECKOUT_PATH
+mkdir -p $QT5_INSTALL_PATH
+mkdir -p $QT5_BUILD_PATH
+git clone git://code.qt.io/qt/qt5.git $QT5_CHECKOUT_PATH
+cd $QT5_CHECKOUT_PATH
+git checkout 5.12
+perl init-repository --module-subset=default,-qtwebengine
+./configure -developer-build -opensource -nomake examples -nomake tests --confirm-license
+gmake
+gmake install
 
 # FGFS
 FLIGHTGEAR_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/flightgear
@@ -205,7 +195,10 @@ git clone https://git.code.sf.net/p/flightgear/fgdata $FGDATA_INSTALL_PATH
 cd $FGDATA_INSTALL_PATH
 git pull -r
 cd $FLIGHTGEAR_BUILD_PATH
-#$QT5_INSTALL_PATH;
-cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$FLIGHTGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH;$SIMGEAR_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH;$PLIB_INSTALL_PATH" -DFG_DATA_DIR="$FGDATA_INSTALL_PATH" $FLIGHTGEAR_CHECKOUT_PATH
+cmake3 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=$FLIGHTGEAR_INSTALL_PATH -DCMAKE_PREFIX_PATH="$BOOST_INSTALL_PATH;$QT5_INSTALL_PATH;$SIMGEAR_INSTALL_PATH;$OSG_INSTALL_PATH;$OPENRTI_INSTALL_PATH;$ZLIB_INSTALL_PATH;$CURL_INSTALL_PATH" -DFG_DATA_DIR="$FGDATA_INSTALL_PATH" $FLIGHTGEAR_CHECKOUT_PATH
 make
 make install
+
+
+# libcgal-devel libqt4-dev zlib1g-devel freeglut3-devel libopenscenegraph-3.4-devel libopenscenegraph-devel  libplib-dev  libpng12-devel libpng16-dev qt5-default qtdeclarative5-dev qtbase5-dev-tools qttools5-dev-tools qml-module-qtquick2 qml-module-qttquick-window2 qml-module-qtquick-dialogs libqt5opengl5-devel libqt5svt5-devel libqt5websockets5-devel qtbase5-private-devel qtdeclarative5-private-devel  fluid python3-pyqt5 python3-pyqt5.qtmultimedia libqt5multimedia5-plugins python-tk
+
