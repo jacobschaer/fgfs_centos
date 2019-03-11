@@ -4,13 +4,15 @@ sudo yum install -y epel-release
 sudo yum update -y
 sudo yum install -y gcc gcc-c++ make cmake git libcurl-devel libarchive-devel bzip2-devel expat-devel xz-devel ncurses-devel procps zlib-devel  libtiff-devel qt-devel freeglut-devel boost-devel  libgudev1-devel libudev-devel dbus-devel libpng-devel  libXi-devel libXmu-devel libXinerama-devel libjpeg-turbo-devel libXft-devel tkinter cmake3 jsoncpp-devel gdal-devel glew-devel openal-soft-devel fltk-fluid python34 python34-tkinter
 
-WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
-
-
 # Devtools
 sudo yum install -y centos-release-scl
 sudo yum install -y devtoolset-7
-scl enable devtoolset-7 bash
+source scl_source enable devtoolset-7
+export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
+export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+export AR=/opt/rh/devtoolset-7/root/usr/bin/ar
+
+WORKSPACE_PATH="/home/jacob/Desktop/fgfs"
 
 #GCC - In case Devtools isn't good enough
 #GCC_CHECKOUT_PATH=$WORKSPACE_PATH/checkouts/gcc
@@ -85,12 +87,12 @@ tar -xvvf boost.tar.gz
 cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
 cd tools/build
 sh bootstrap.sh
-# If Using Custom GCC
+# If Using Custom compiled GCC
 #echo "using gcc : 4.9.4 : $CXX ; " >> src/user-config.jam
 cd $BOOST_CHECKOUT_PATH/boost_1_69_0/
-# If using custom GCC
+# If using custom compiled GCC
 #tools/build/b2 --prefix=$BOOST_INSTALL_PATH --build-dir=$BOOST_BUILD_PATH toolset=gcc-4.9.4 install
-export $PATH=$BOOST_BUILD_PATH/boost:$PATH
+# otherwise
 tools/build/b2 --prefix=$BOOST_INSTALL_PATH --build-dir=$BOOST_BUILD_PATH install
 export $PATH=$BOOST_BUILD_PATH/boost:$PATH
 
